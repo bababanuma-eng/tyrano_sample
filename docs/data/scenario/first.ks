@@ -1,46 +1,561 @@
-*start
+; 目指せ!ベンチプレス150kg
+; このゲームの登場人物はすべて架空です。
 
-[title name="走るか寝るかするメロス"]
+[macro name="hud"]
+[eval exp="f.hud1='パワー'+f.pow+'　テクニック'+f.tec+'　料理'+f.cook"]
+[eval exp="f.hud2='挙上'+Math.min(200,f.pow+f.tec)+'kg　'+f.mp+'MP'"]
+[freeimage layer="2"]
+[image layer="2" storage="status_panel.png" left="16" top="14" width="460" height="100" visible="true"]
+[ptext layer="2" x="42" y="30" size="24" color="white" bold="bold" text="&f.hud1"]
+[ptext layer="2" x="42" y="68" size="24" color="0xffd966" bold="bold" text="&f.hud2"]
+[endmacro]
+
+[macro name="hero"]
+[eval exp="tf.hi=mp.img||(f.pow+f.tec<90?'thin':f.pow+f.tec<130?'mid':'muscle')"]
+[eval exp="tf.hw=tf.hi=='thin'?231:tf.hi=='mid'?269:tf.hi=='muscle'?269:tf.hi=='injury'?242:392"]
+[eval exp="tf.hl=Math.round((mp.c?Number(mp.c):640)-tf.hw/2);tf.hs='hero_'+tf.hi+'.png'"]
+[freeimage layer="1"]
+[image layer="1" storage="&tf.hs" left="&tf.hl" top="10" width="&tf.hw" height="640" visible="true"]
+[endmacro]
+
+*start
+[title name="目指せ!ベンチプレス150kg"]
 [hidemenubutton]
 [wait time=200]
 [freeimage layer="base"]
+[freeimage layer="1"]
+[freeimage layer="2"]
+[layopt layer="2" visible="true"]
+[position layer="message0" left="64" top="380" width="1152" height="320" page="fore" visible="true" color="0x000000" opacity="235" marginl="24" margint="14" marginr="24" marginb="10"]
+[deffont size="24"]
+[resetfont]
+[delay speed="12"]
+[eval exp="f.pow=40;f.tec=20;f.cook=0;f.mp=0;f.dmg=0;f.stage=1;f.qz=1;f.ok=0;f.creatine=0;f.wrist=0;f.cooker=0;f.shirt=0;f.musclex=0;f.senin=0;f.chicken=0;f.legendDone=0;f.final=0"]
+[bg storage="gym.jpg" time="300"]
+[cm]
+【 目指せ!ベンチプレス150kg 】[l][r][r]
+ベンチプレス60kgのあなたは、ある日ジムの張り紙を見た。[l][r]
+「来たれ、ベンチプレス150kgの猛者」[l]
+[cm]
+理由はない。だが、胸が熱い。物理的にも。[l][r]
+あなたの3年間が、いま始まる。[l]
+[jump target="*hub"]
 
-「走るか寝るかするメロス」[l][r]
-
-メロスは激怒した。[l][r]
-
-必ず、かの邪智暴虐の王を除かねばならぬと決意した。[l][r]
-
-(中略)[l][r]
-
-ああ、何もかも、ばかばかしい。私は、醜い裏切り者だ。どうとも、勝手にするがよい。やんぬる哉。[l][r]
-メロスは...[l][r]
-
-[link target=*tag_sleep] →寝る [endlink][r]
-[link target=*tag_run] →走る [endlink][r]
+; ===== 拠点 =====
+*hub
+[bg storage="gym.jpg" time="200"]
+[hero]
+[cm]
+[hud]
+ここはいつものジムだ。何をする?[r][r]
+[if exp="f.stage<=8"]
+[link target="*next_q"]→ 次の試練へ進む(第[emb exp="f.stage"]問)[endlink][r]
+[else]
+[link target="*boss"]→ 決戦の日へ向かう[endlink][r]
+[endif]
+[if exp="f.qz<=10"]
+[link target="*next_tq"]→ 筋トレ豆知識クイズ(残り[emb exp="11-f.qz"]問)[endlink][r]
+[endif]
+[link target="*shop"]→ ショップへ行く[endlink][r]
 [s]
 
-*tag_sleep
+*next_q
+[eval exp="f.next='*q'+f.stage"]
+[jump target="&f.next"]
 
+*next_tq
+[eval exp="f.next='*tq'+f.qz"]
+[jump target="&f.next"]
+
+; ===== 知識問題(全8問) =====
+*q1
 [cm]
+[hud]
+第1問:構えるとき、肩甲骨はどうする?[r][r]
+[link target="*pick_c"]→ 肩こりに効く薬膳を研究する(料理+20)[endlink][r]
+[link target="*pick_t"]→ 寄せて下げ、胸を張って固定する(テクニック+10)[endlink][r]
+[link target="*pick_p_bad"]→ 肩をすくめて腕力で押し切る(パワー+10)[endlink][r]
+[s]
 
-[bg storage=sleep.jpg time=500]
-
-メロスは死んだように深く眠った。[l][r]
-勇者は、ひどく赤面した。[r]
-
-【 BAD END 】[l][cm]
-
-[jump target=*start]
-
-*tag_run
-
-[bg storage=run.jpg time=500]
-
+*q2
 [cm]
-メロスは黒い風のように走った。[l][r]
-陽は、ゆらゆら地平線に没し、まさに最後の一片の残光も、消えようとした時、メロスは疾風の如く刑場に突入した。間に合った。[r]
+[hud]
+第2問:先輩「強くなりたいなら、どう伸ばす?」[r][r]
+[link target="*pick_p"]→ 前回より重量か回数を少し増やす(パワー+10)[endlink][r]
+[link target="*pick_c"]→ 先輩に差し入れ弁当を作る(料理+20)[endlink][r]
+[link target="*pick_t_bad"]→ 毎回限界の1回でフォーム確認(テクニック+10)[endlink][r]
+[s]
 
-【 GOOD END 】[l][cm]
+*q3
+[bg storage="kitchen.jpg" time="200"]
+[cm]
+[hud]
+第3問:体重が増えない。冷蔵庫も空だ。何を食べる?[r][r]
+[link target="*pick_t_bad"]→ 空腹のまま集中してフォームを磨く(テクニック+10)[endlink][r]
+[link target="*pick_chicken"]→ 鶏むね肉料理を極める(料理+20)[endlink][r]
+[link target="*pick_p"]→ タンパク質を体重×1.6〜2g、炭水化物もとる(パワー+10)[endlink][r]
+[s]
 
-[jump target=*start]
+*q4
+[bg storage="gym.jpg" time="200"]
+[cm]
+[hud]
+第4問:バーを押すとき、足はどうする?[r][r]
+[link target="*pick_t"]→ 足裏で床を踏みしめる(テクニック+10)[endlink][r]
+[link target="*pick_p_bad"]→ 足を浮かせて上半身だけで押す(パワー+10)[endlink][r]
+[link target="*pick_c"]→ 足がつらないよう塩むすびを極める(料理+20)[endlink][r]
+[s]
+
+*q5
+[bg storage="bedroom.jpg" time="200"]
+[cm]
+[hud]
+第5問:深夜2時。まだ追い込める気がする。[r][r]
+[link target="*pick_c"]→ 安眠スープを開発する(料理+20)[endlink][r]
+[link target="*pick_t_bad"]→ 徹夜でフォーム動画を研究する(テクニック+10)[endlink][r]
+[link target="*pick_p"]→ 毎日7時間以上、同じ時間に寝る(パワー+10)[endlink][r]
+[s]
+
+*q6
+[bg storage="gym.jpg" time="200"]
+[cm]
+[hud]
+第6問:バーはどこへ下ろす?[r][r]
+[link target="*pick_p_bad"]→ 首の真上へ下ろして押す(パワー+10)[endlink][r]
+[link target="*pick_t"]→ 胸の下あたりへ下ろし、安定した軌道で押す(テクニック+10)[endlink][r]
+[link target="*pick_c"]→ バーの形のパンを焼く(料理+20)[endlink][r]
+[s]
+
+*q7
+[cm]
+[hud]
+第7問:手首の角度はどうする?[r][r]
+[link target="*pick_c"]→ 手首のスナップでフライパンを振る(料理+20)[endlink][r]
+[link target="*pick_p_bad"]→ 大きく反らせて力任せに握る(パワー+10)[endlink][r]
+[link target="*pick_t"]→ 手首を立て、バーを骨の真上に乗せる(テクニック+10)[endlink][r]
+[s]
+
+*q8
+[cm]
+[hud]
+第8問:最近バーがやけに重い。記録も伸びない。[r][r]
+[link target="*pick_t_bad"]→ 疲れたままフォームを反復する(テクニック+10)[endlink][r]
+[link target="*pick_p"]→ 1週間だけ重量を落として回復する(パワー+10)[endlink][r]
+[link target="*pick_c"]→ 回復ごはんを作る(料理+20)[endlink][r]
+[s]
+
+*pick_p
+[eval exp="f.pow+=10"]
+[jump target="*encounter"]
+*pick_t
+[eval exp="f.tec=Math.min(120,f.tec+10)"]
+[jump target="*encounter"]
+*pick_c
+[eval exp="f.cook+=20"]
+[jump target="*encounter"]
+*pick_chicken
+[eval exp="f.cook+=20;f.chicken=1"]
+[jump target="*encounter"]
+*pick_p_bad
+[eval exp="f.pow+=10;f.dmg+=1"]
+[jump target="*encounter"]
+*pick_t_bad
+[eval exp="f.tec=Math.min(120,f.tec+10);f.dmg+=1"]
+[jump target="*encounter"]
+
+; ===== ランダム遭遇 =====
+*encounter
+[eval exp="f.stage+=1;f.r=Math.floor(Math.random()*100)"]
+[bg storage="gym.jpg" time="200"]
+[hero c="610"]
+[cm]
+[jump target="*enc_legend" cond="f.r<10 && f.legendDone==0"]
+[jump target="*enc_none" cond="f.r<10"]
+[jump target="*enc_kata" cond="f.r<28"]
+[jump target="*enc_gori" cond="f.r<46"]
+[jump target="*enc_sasami" cond="f.r<64"]
+[jump target="*enc_rep" cond="f.r<82"]
+*enc_none
+今日は誰にも会わなかった。[r]
+ベンチ台だけが、静かにあなたを見ている。[l]
+[jump target="*hub"]
+
+*enc_kata
+[image layer="1" storage="kata.png" left="896" top="10" width="328" height="640" visible="true"]
+型破コーチが現れた![l][r][r]
+[if exp="f.dmg>0"]
+「お前の肩、泣いてるぞ。その無茶、次は本当に壊れるからな」[l][r]
+[endif]
+[if exp="f.tec>=30"]
+[eval exp="f.mp+=100"]
+[hud]
+「フォームだけは型破りじゃないな。認めよう」[l][r]
+100MPを手に入れた![l]
+[else]
+「まずは肩甲骨の場所を探してこい!」[r]
+テクニックが30あれば認めてもらえそうだ。[l]
+[endif]
+[jump target="*hub"]
+
+*enc_gori
+[image layer="1" storage="gori.png" left="873" top="10" width="375" height="640" visible="true"]
+怪力ゴリ蔵が現れた![l][r][r]
+[if exp="f.pow>=50"]
+[eval exp="f.mp+=100"]
+[hud]
+「ガハハ!いい胸板になってきたな!」[l][r]
+100MPを手に入れた![l]
+[else]
+「ガハハ!その腕、割り箸かと思ったぞ!」[r]
+パワーが50あれば認めてもらえそうだ。[l]
+[endif]
+[jump target="*hub"]
+
+*enc_sasami
+[image layer="1" storage="sasami.png" left="894" top="10" width="333" height="640" visible="true"]
+ササミ先生が現れた![l][r][r]
+[if exp="f.cook>=30"]
+[eval exp="f.mp+=100"]
+[hud]
+「まあ、しっとり仕上がってるわ。鶏むねも、あなたも」[l][r]
+100MPを手に入れた![l]
+[else]
+「まずは自炊からね。パサパサの人生はもう終わりよ」[r]
+料理が30あれば認めてもらえそうだ。[l]
+[endif]
+[jump target="*hub"]
+
+*enc_rep
+[image layer="1" storage="rep.png" left="885" top="10" width="351" height="640" visible="true"]
+ドクター・レップが現れた![l][r][r]
+[if exp="f.ok>=3"]
+[eval exp="f.mp+=100"]
+[hud]
+「ほう、よく勉強している。筋肉は知性だよ、きみ」[l][r]
+100MPを手に入れた![l][r]
+「そうそう、伝説の男は料理に目がないらしいぞ」[l]
+[else]
+「知識なき筋肉は、ただの重りだ」[r]
+豆知識に3問正解すれば認めてもらえそうだ。[l]
+[endif]
+[jump target="*hub"]
+
+*enc_legend
+[image layer="1" storage="legend.png" left="855" top="10" width="410" height="613" visible="true"]
+ジムの空気が、黄金色に変わった。[l][r]
+伝説のボディビルダー、バルク・ザ・レジェンドだ![l][r][r]
+「少年よ。その弁当、ひと口もらおう」[l][r]
+[if exp="f.cook>=50"]
+[eval exp="f.mp+=1000;f.legendDone=1"]
+[hud]
+「……うまい!!! この味、大胸筋に染みわたる!」[l][r]
+1000MPを手に入れた![l]
+[else]
+「ふむ。私の胃袋は、まだ満足していない」[r]
+料理が50あれば、彼をうならせられそうだ。[l]
+[endif]
+[jump target="*hub"]
+
+; ===== ショップ =====
+*shop
+[bg storage="shop.jpg" time="200"]
+[hero]
+[cm]
+[hud]
+店主「いらっしゃい。効果は買ってからのお楽しみだよ」[r][r]
+[if exp="f.creatine==0"]
+[link target="*buy_creatine"]→ クレアチン 150MP[endlink]　｜
+[endif]
+[if exp="f.wrist==0"]
+[link target="*buy_wrist"]→ リストラップ 100MP[endlink]
+[endif]
+[r]
+[if exp="f.cooker==0"]
+[link target="*buy_cooker"]→ 低温調理器 100MP[endlink]　｜
+[endif]
+[if exp="f.shirt==0"]
+[link target="*buy_shirt"]→ ベンチシャツ 150MP[endlink]
+[endif]
+[r]
+[if exp="f.musclex==0"]
+[link target="*buy_musclex"]→ 飲むだけマッスルX 50MP[endlink]　｜
+[endif]
+[if exp="f.senin==0"]
+[link target="*buy_senin"]→ ベンチプレス仙人チケット 1000MP[endlink]
+[endif]
+[r]
+[link target="*hub"]→ 店を出る[endlink][r]
+[s]
+
+*no_money
+[cm]
+店主「MPが足りないね。出直しておいで」[l]
+[jump target="*shop"]
+
+*buy_creatine
+[jump target="*no_money" cond="f.mp<150"]
+[eval exp="f.mp-=150;f.creatine=1;f.pow+=5"]
+[hud]
+[cm]
+クレアチンを買った。地味だが、確かな手応えがある。[r]
+パワー+5![l]
+[jump target="*shop"]
+
+*buy_wrist
+[jump target="*no_money" cond="f.mp<100"]
+[eval exp="f.mp-=100;f.wrist=1;f.tec=Math.min(120,f.tec+5)"]
+[hud]
+[cm]
+リストラップを買った。手首が頼もしい。[r]
+テクニック+5![l]
+[jump target="*shop"]
+
+*buy_cooker
+[jump target="*no_money" cond="f.mp<100"]
+[eval exp="f.mp-=100;f.cooker=1;f.cook+=30"]
+[hud]
+[cm]
+低温調理器を買った。なぜ買ったのかは、自分でもわからない。[r]
+料理+30![l]
+[jump target="*shop"]
+
+*buy_shirt
+[jump target="*no_money" cond="f.mp<150"]
+[eval exp="f.mp-=150;f.shirt=1"]
+[hud]
+[cm]
+ベンチシャツを買った。[l][r]
+店主「あ、今度の大会はノーギアだから着られないよ」[r]
+先に言ってほしかった。[l]
+[jump target="*shop"]
+
+*buy_musclex
+[jump target="*no_money" cond="f.mp<50"]
+[eval exp="f.mp-=50;f.musclex=1;f.pow-=5"]
+[hud]
+[cm]
+飲むだけマッスルXを飲んだ。[l][r]
+お腹を壊して、3日寝込んだ。[r]
+パワー−5![l]
+[jump target="*shop"]
+
+*buy_senin
+[jump target="*no_money" cond="f.mp<1000"]
+[eval exp="f.mp-=1000;f.senin=1;f.tec=120"]
+[hud]
+[bg storage="end_hof.jpg" time="500"]
+[freeimage layer="1"]
+[image layer="1" storage="sennin.png" left="454" top="10" width="372" height="640" visible="true"]
+[cm]
+チケットを握ると、黄金の神殿にいた。どこからか声がする。[l][r]
+仙人「ベンチプレスとは、宇宙を押し返すことじゃ」[l][r]
+意味はわからない。だが、すべてを理解した。[l][r][r]
+悟りを開いた! テクニックがカンストした![l]
+[freeimage layer="1"]
+[jump target="*shop"]
+
+; ===== 豆知識クイズ(各問5MP) =====
+*tq_ok
+[eval exp="f.qz+=1;f.ok+=1;f.mp+=5"]
+[hud]
+[cm]
+正解! 5MPを手に入れた![l]
+[jump target="*hub"]
+*tq_ng
+[eval exp="f.qz+=1"]
+[cm]
+不正解! この問題はもう出ない。[l]
+[jump target="*hub"]
+
+*tq1
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識1:プログレッシブオーバーロードの意味は?[r][r]
+[link target="*tq_ng"]→ 荷物を積みすぎること[endlink][r]
+[link target="*tq_ok"]→ 負荷を少しずつ増やしていくこと[endlink][r]
+[link target="*tq_ng"]→ 休まず毎日鍛えること[endlink][r]
+[s]
+*tq2
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識2:1RMとは何のこと?[r][r]
+[link target="*tq_ok"]→ 1回だけ挙げられる最大の重量[endlink][r]
+[link target="*tq_ng"]→ 1分間の休憩[endlink][r]
+[link target="*tq_ng"]→ 1か月の練習量[endlink][r]
+[s]
+*tq3
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識3:RPEは何を表す指標?[r][r]
+[link target="*tq_ng"]→ 体脂肪率[endlink][r]
+[link target="*tq_ng"]→ 1日の歩数[endlink][r]
+[link target="*tq_ok"]→ 運動のきつさの主観的な評価[endlink][r]
+[s]
+*tq4
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識4:ベンチプレスで主に鍛える胸の筋肉は?[r][r]
+[link target="*tq_ok"]→ 大胸筋[endlink][r]
+[link target="*tq_ng"]→ 広背筋[endlink][r]
+[link target="*tq_ng"]→ 大腿四頭筋[endlink][r]
+[s]
+*tq5
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識5:肘を伸ばすときに主に働く腕の筋肉は?[r][r]
+[link target="*tq_ng"]→ 上腕二頭筋[endlink][r]
+[link target="*tq_ok"]→ 上腕三頭筋[endlink][r]
+[link target="*tq_ng"]→ 前腕屈筋群[endlink][r]
+[s]
+*tq6
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識6:クレアチンに期待される主な効果は?[r][r]
+[link target="*tq_ng"]→ 飲むだけで脂肪が溶ける[endlink][r]
+[link target="*tq_ng"]→ 睡眠が不要になる[endlink][r]
+[link target="*tq_ok"]→ 短時間の高強度運動の能力を高める[endlink][r]
+[s]
+*tq7
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識7:タンパク質1gのエネルギーは約何kcal?[r][r]
+[link target="*tq_ok"]→ 約4kcal[endlink][r]
+[link target="*tq_ng"]→ 約9kcal[endlink][r]
+[link target="*tq_ng"]→ 約40kcal[endlink][r]
+[s]
+*tq8
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識8:トレーニング中の補助者を何と呼ぶ?[r][r]
+[link target="*tq_ng"]→ スポンサー[endlink][r]
+[link target="*tq_ok"]→ スポッター[endlink][r]
+[link target="*tq_ng"]→ スプリンター[endlink][r]
+[s]
+*tq9
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識9:一人でベンチプレスをするとき、バーに潰されないために使うものは?[r][r]
+[link target="*tq_ng"]→ リストラップ[endlink][r]
+[link target="*tq_ng"]→ プロテインシェイカー[endlink][r]
+[link target="*tq_ok"]→ ラックのセーフティバー[endlink][r]
+[s]
+*tq10
+[bg storage="quiz.jpg" time="200"]
+[cm]
+豆知識10:運動の翌日以降に出る筋肉痛の略称は?[r][r]
+[link target="*tq_ok"]→ DOMS[endlink][r]
+[link target="*tq_ng"]→ PFC[endlink][r]
+[link target="*tq_ng"]→ BCAA[endlink][r]
+[s]
+
+; ===== 決戦の日 =====
+*boss
+[jump target="*end_injury" cond="f.dmg>=2"]
+[bg storage="arena.jpg" time="500"]
+[hero]
+[cm]
+[hud]
+3年が過ぎた。ついに決戦の日だ。[l][r]
+観客の声援が、胸に響く。主に大胸筋に。[r]
+どう挑む?[r]
+[link target="*boss_help"]→ 仲間に補助を頼む[endlink][r]
+[link target="*end_alone"]→ 一人で挑む[endlink][r]
+[if exp="f.chicken==1 && f.cooker==1"]
+[link target="*end_chef"]→ バーベルを置き、包丁を握る[endlink][r]
+[endif]
+[s]
+
+*boss_help
+[jump target="*end_hof" cond="f.senin==1 && f.pow>=80 && f.dmg==0"]
+[eval exp="f.final=f.pow+f.tec-15*f.dmg"]
+[eval exp="f.final=Math.min(145,f.final)" cond="f.senin==1"]
+[cm]
+深く息を吸う。肩甲骨を寄せる。足で床を踏む。[l][r]
+仲間「いけえええ!」[l][r][r]
+記録:[emb exp="f.final"]kg[l]
+[jump target="*end_true" cond="f.final>=150"]
+[jump target="*end_close" cond="f.final>=130"]
+[jump target="*end_retry"]
+
+*end_true
+[freeimage layer="2"]
+[bg storage="end_true.jpg" time="500"]
+[hero img="muscle"]
+[cm]
+バーが、上がった。[l][r]
+150kg。3年分の鶏むね肉が報われた瞬間だった。[l][r][r]
+【 TRUE END:150kgの向こう側 】[l][r]
+ひそかに噂がある。この先に、まだ別の頂があると。[l]
+[jump target="*start"]
+
+*end_close
+[freeimage layer="2"]
+[bg storage="gym.jpg" time="500"]
+[cm]
+あと少しで、バーは止まった。[l][r]
+「来年こそ」と言いながら、帰りにプロテインを買った。[l][r][r]
+[if exp="f.senin==1"]
+仙人の教えに、体がまだ追いついていないようだ。[l][r]
+[endif]
+【 惜しいEND:来年こそ 】[l][r]
+ヒント:アイテムの中に、本当に効くものが2つある。[l]
+[jump target="*start"]
+
+*end_retry
+[freeimage layer="2"]
+[bg storage="gym.jpg" time="500"]
+[cm]
+バーは、一度も胸から離れなかった。[l][r]
+夕暮れのジムで、あなたはそっとプレートを外した。[l][r][r]
+【 出直しEND:また一から 】[l][r]
+ヒント:あの低温調理器、何に使うんだろう……。[l]
+[jump target="*start"]
+
+*end_alone
+[freeimage layer="2"]
+[bg storage="arena.jpg" time="300"]
+[cm]
+補助はいらない。あなたは一人でバーを握った。[l][r]
+そして、胸の上で動かなくなった。[l][r]
+ラックのセーフティバーだけが、あなたを救ってくれた。[l][r][r]
+【 BAD END:孤高の代償 】[l][r]
+ヒント:重いベンチプレスには、補助者を。[l]
+[jump target="*start"]
+
+*end_injury
+[freeimage layer="2"]
+[bg storage="end_injury.jpg" time="500"]
+[hero img="injury"]
+[cm]
+決戦の朝、肩が上がらなくなった。[l][r]
+医師「あなた、どんな無茶をしたんですか」[l][r]
+思い当たることが多すぎた。[l][r][r]
+【 BAD END:肩が泣いている 】[l][r]
+ヒント:大きな効果に見える選択肢には、裏があるかもしれない。[l]
+[jump target="*start"]
+
+*end_chef
+[freeimage layer="2"]
+[bg storage="end_chef.jpg" time="500"]
+[hero img="chef"]
+[cm]
+あなたはバーベルを置き、包丁を握った。[l][r]
+観客「えっ」[l][r]
+その場で仕上げた鶏むね肉のコンフィは、審査員を泣かせた。[l][r]
+数年後、あなたの店は三つ星を獲得した。[l]
+[cm]
+【 裏END:鶏むね王、三ツ星シェフになる 】[l][r]
+ベンチプレスの記録は、誰も覚えていない。[l]
+[jump target="*start"]
+
+*end_hof
+[freeimage layer="2"]
+[bg storage="end_hof.jpg" time="800"]
+[hero img="muscle"]
+[cm]
+あなたがバーに触れた瞬間、会場が静まり返った。[l][r]
+200kgのバーが、宙に浮くように上がっていく。[l][r]
+宇宙を、押し返した。[l][r][r]
+【 裏END:殿堂入り 200kg 】[l][r]
+あなたの名は、ベンチプレスの殿堂に永遠に刻まれた。[l]
+[jump target="*start"]
